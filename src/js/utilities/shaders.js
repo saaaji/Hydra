@@ -28,7 +28,7 @@ export class SourceCache {
     if (rawSource) {
       let source = rawSource;
       
-      for (const [directive, moduleName] of source.matchAll(this.constructor.#INCLUDE_REGEX)) {
+      for (const [directive, moduleName] of source.matchAll(SourceCache.#INCLUDE_REGEX)) {
         source = source.replace(directive, this.#modules.get(moduleName) ?? '');
       }
       

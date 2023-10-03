@@ -1,0 +1,32 @@
+{
+  "name": "webgpu-path-tracer",
+  "version": "1.0.0",
+  "description": "A path tracer implemented with the webgpu api",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saaaji/WebGL-2-Path-Tracer.git"
+  },
+  "author": "saaaji",
+  "contributors": [
+    "Lesley Lai <lesley@lesleylai.info> (lesleylai.info)"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/saaaji/WebGL-2-Path-Tracer",
+  "devDependencies": {
+    "parcel": "^2.9.3",
+    "parcel-reporter-multiple-static-file-copier": "^1.0.5",
+    "typescript": "^5.2.2"
+  },
+  "multipleStaticFileCopier": [
+    {
+      "origin": "assets",
+      "destination": "dist/assets/"
+    }
+  ]
+}
