@@ -1,4 +1,10 @@
-import { lowQualityId, enumerate } from "./util.js";
+import { enumerate } from "./util.js";
+
+const lowQualityId = () => Math
+  .random()
+  .toString(36)
+  .substr(2, 9)
+  .toUpperCase();
 
 export class ActiveNodeEditor {
   static #DEFAULT_INSTANCE = new ActiveNodeEditor(document.querySelector('#node-1'));
@@ -13,6 +19,7 @@ export class ActiveNodeEditor {
   
   #container;
   #id = lowQualityId();
+  private updateCallback: () => void;
   
   constructor(container, updateCallback = () => {}) {
     this.#container = container;

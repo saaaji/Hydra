@@ -5,10 +5,10 @@ import { AABB } from '../accel/AABB.js';
 const GLSL_EPSILON = 1e-3;
 
 export class Triangle {
-  #id;
+  #id: number;
   #boundingBox = new AABB();
   
-  constructor(triangleIndex, indices, vertices, stride = 3) {
+  constructor(triangleIndex: number, indices: number[], vertices: number[], stride = 3) {
     const realIndex = triangleIndex * stride;
     
     const a = indices[realIndex] * 3,
@@ -57,12 +57,12 @@ export class Triangle {
 }
 
 export class MeshBlas {
-  #id;
+  #id: number;
   #boundingBox = new AABB();
-  #name;
+  #name: string;
   #reference;
   
-  constructor(meshNode, index) {
+  constructor(meshNode, index: number) {
     const {mesh: {boundingBox}, worldMatrix, name} = meshNode;
     const min = boundingBox.min.clone();
     const max = boundingBox.max.clone();
@@ -112,3 +112,5 @@ export class MeshBlas {
     return this.#reference;
   }
 }
+
+export type Primitive = Triangle | MeshBlas;

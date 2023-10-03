@@ -1,5 +1,9 @@
 export class Euler {
-  
+  private _x: number;
+  private _y: number;
+  private _z: number;
+  private onchange?: () => void;  
+
   constructor(x = 0, y = 0, z = 0) {
     this._x = x;
     this._y = y;

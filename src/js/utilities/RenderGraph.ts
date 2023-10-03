@@ -184,7 +184,7 @@ export class FrameGraph {
   static #CANVAS_KEY = 'FBO()';
   static Tex = FrameGraphTextureResource;
   
-  #gl;
+  #gl: WebGL2RenderingContext;
   #frames = new Map();
   
   // user must initialize external resources

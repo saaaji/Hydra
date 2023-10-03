@@ -2,6 +2,7 @@ import { Vector3 } from './Vector3.js';
 
 export class Matrix4 {
   static IDENTITY = new Matrix4();
+  private elements: Float32Array;
   
   constructor(
     m11 = 1, m12 = 0, m13 = 0, m14 = 0,
@@ -33,7 +34,7 @@ export class Matrix4 {
     return new Matrix4().setFromArray(this.elements);
   }
   
-  copy(m) {
+  copy(m: Matrix4) {
     this.elements.set(m.elements, 0);
     return this;
   }

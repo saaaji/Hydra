@@ -314,7 +314,7 @@ async function getPbrMap(json, binary, textureInfo, factors = [1, 1, 1, 1]) {
 
 async function createImage(color, size) {
   const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d')!;
   
   canvas.width = canvas.height = size;
   

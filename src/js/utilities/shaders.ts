@@ -2,8 +2,9 @@ export class SourceCache {
   static #INCLUDE_REGEX = /#pragma HYDRA include<([._a-zA-Z]+)>/g;
   
   #modules = new Map();
+  pathMap: Map<string, string>;
   
-  constructor(pathMap) {
+  constructor(pathMap: Map<string, string>) {
     this.pathMap = pathMap;
   }
   

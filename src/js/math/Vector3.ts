@@ -1,6 +1,37 @@
 import { ActiveNodeEditor } from '../utilities/ActiveNodeEditor.js';
+import { Matrix4 } from './Matrix4.js';
+import { Quaternion } from './Quaternion.js';
 
 export class Vector3 {
+  private _x: number;
+  private _y: number;
+  private _z: number;
+  onchange?: (() => void) | null;
+
+  get x() {
+    return this._x;
+  }
+  set x(value) {
+    this._x = value;
+    this.onchange?.();
+  }
+  
+  get y() {
+    return this._y;
+  }
+  set y(value) {
+    this._y = value;
+    this.onchange?.();
+  }
+
+  get z() {
+    return this._z;
+  }
+  set z(value) {
+    this._z = value;
+    this.onchange?.();
+  }
+
   constructor(x = 0, y = 0, z = 0) {
     this._x = x;
     this._y = y;
@@ -8,7 +39,7 @@ export class Vector3 {
     this.onchange = function(){};
   }
   
-  setFromArray(array, offset = 0) {
+  setFromArray(array: number[], offset = 0) {
     this._x = array[offset];
     this._y = array[offset + 1];
     this._z = array[offset + 2];
@@ -53,7 +84,7 @@ export class Vector3 {
     return new Vector3(this._x, this._y, this._z);
   }
   
-  copy(a) {
+  copy(a: Vector3) {
     this._x = a.x;
     this._y = a.y;
     this._z = a.z;
@@ -63,7 +94,7 @@ export class Vector3 {
     return this;
   }
   
-  set(x, y, z) {
+  set(x: number, y: number, z: number) {
     this._x = x;
     this._y = y;
     this._z = z;
@@ -73,7 +104,7 @@ export class Vector3 {
     return this;
   }
   
-  minVectors(a, b) {
+  minVectors(a: Vector3, b: Vector3) {
     this._x = Math.min(a.x, b.x);
     this._y = Math.min(a.y, b.y);
     this._z = Math.min(a.z, b.z);
@@ -83,7 +114,7 @@ export class Vector3 {
     return this;
   }
   
-  maxVectors(a, b) {
+  maxVectors(a: Vector3, b: Vector3) {
     this._x = Math.max(a.x, b.x);
     this._y = Math.max(a.y, b.y);
     this._z = Math.max(a.z, b.z);
@@ -93,7 +124,7 @@ export class Vector3 {
     return this;
   }
   
-  min(v) {
+  min(v: Vector3) {
     this._x = Math.min(this._x, v[0]);
     this._y = Math.min(this._y, v[1]);
     this._z = Math.min(this._z, v[2]);
@@ -103,7 +134,7 @@ export class Vector3 {
     return this;
   }
   
-  max(v) {
+  max(v: Vector3) {
     this._x = Math.max(this._x, v[0]);
     this._y = Math.max(this._y, v[1]);
     this._z = Math.max(this._z, v[2]);
@@ -113,7 +144,7 @@ export class Vector3 {
     return this;
   }
   
-  subVectors(a, b) {
+  subVectors(a: Vector3, b: Vector3) {
     this._x = a.x - b.x;
     this._y = a.y - b.y;
     this._z = a.z - b.z;
@@ -123,7 +154,7 @@ export class Vector3 {
     return this;
   }
   
-  addVectors(a, b) {
+  addVectors(a: Vector3, b: Vector3) {
     this._x = a.x + b.x;
     this._y = a.y + b.y;
     this._z = a.z + b.z;
@@ -133,7 +164,7 @@ export class Vector3 {
     return this;
   }
   
-  addScalar(s) {
+  addScalar(s: number) {
     this._x += s;
     this._y += s;
     this._z += s;
@@ -143,7 +174,7 @@ export class Vector3 {
     return this;
   }
   
-  componentWiseAddScalar(s0, s1, s2) {
+  componentWiseAddScalar(s0: number, s1: number, s2: number) {
     this._x += s0;
     this._y += s1;
     this._z += s2;
@@ -153,7 +184,7 @@ export class Vector3 {
     return this;
   }
   
-  applyMatrix4(transform, w = 1, perspectiveDivide = false) {
+  applyMatrix4(transform: Matrix4, w = 1, perspectiveDivide = false) {
     const x = this._x;
     const y = this._y;
     const z = this._z;
@@ -172,7 +203,7 @@ export class Vector3 {
     return this;
   }
   
-  scale(scalar) {
+  scale(scalar: number) {
     this._x *= scalar;
     this._y *= scalar;
     this._z *= scalar;
@@ -182,7 +213,7 @@ export class Vector3 {
     return this;
   }
   
-  componentWiseScale(s0, s1, s2) {
+  componentWiseScale(s0: number, s1: number, s2: number) {
     this._x *= s0;
     this._y *= s1;
     this._z *= s2;
@@ -197,7 +228,7 @@ export class Vector3 {
     return this.scale(1 / length);
   }
   
-  crossVectors(a, b) {
+  crossVectors(a: Vector3, b: Vector3) {
     const [aX, aY, aZ] = a;
     const [bX, bY, bZ] = b;
     
@@ -210,7 +241,7 @@ export class Vector3 {
     return this;
   }
   
-  dot(b) {
+  dot(b: Vector3) {
     const [aX, aY, aZ] = this;
     const [bX, bY, bZ] = b;
     
@@ -218,7 +249,7 @@ export class Vector3 {
   }
   
   // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-  setFromQuaternion(q, triggerCallback = true) {
+  setFromQuaternion(q: Quaternion, triggerCallback = true) {
     let a, b;
     
     // roll (x-axis rotation)
@@ -289,16 +320,3 @@ export class Vector3 {
     }
   }
 }
-
-['x', 'y', 'z'].forEach(publicName => {
-  const privateName = '_' + publicName;
-  Object.defineProperty(Vector3.prototype, publicName, {
-    get() {
-      return this[privateName];
-    },
-    set(val) {
-      this[privateName] = val;
-      this.onchange?.();
-    },
-  });
-});

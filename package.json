@@ -4,6 +4,7 @@
   "description": "A path tracer implemented with the webgpu api",
   "source": "src/index.html",
   "scripts": {
+    "type-check": "tsc --noEmit",
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"

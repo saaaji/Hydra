@@ -111,8 +111,8 @@ export class HdrLoader {
 
 // HDR Utilities
 export function computeHdrSamplingDistributions(width, height, data) {
-  const conditionalCdfArray = [];
-  const conditionalPdfArray = [];
+  const conditionalCdfArray: Float32Array[] = [];
+  const conditionalPdfArray: Float32Array[] = [];
   const marginalCdf = new Float32Array(height);
   const marginalPdf = new Float32Array(height);
   const marginalDistribution = new Float32Array(height * 2);

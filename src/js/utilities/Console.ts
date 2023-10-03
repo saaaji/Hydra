@@ -40,7 +40,7 @@ export class DisplayConsole {
     this.#focus();
   }
   
-  #createOutputLine(type, tagName = null) {
+  #createOutputLine(type: string | null = null, tagName: string | null = null) {
     if (this.#container.classList.contains('empty')) {
       this.#container.removeChild(this.#container.firstChild);
       this.#container.classList.remove('empty');
@@ -60,10 +60,10 @@ export class DisplayConsole {
     
     const date = new Date();
     let hours = date.getHours() % 12;
-    hours = hours === 0 ? 12 : hours.toString().padStart(2, '0');
+    let hoursString = hours === 0 ? "12" : hours.toString().padStart(2, '0');
     
     timestamp.textContent = `${
-        hours
+      hoursString
       }:${
         date.getMinutes().toString().padStart(2, '0')
       }:${
@@ -87,7 +87,7 @@ export class DisplayConsole {
   }
   
   // basic logging
-  log(message = DisplayConsole.#DEFAULT_MESSAGE, tagName = null) {
+  log(message = DisplayConsole.#DEFAULT_MESSAGE, tagName: string | null = null) {
     const output = this.#createOutputLine(null, tagName);
     output.textContent = message;
     this.#focus();
@@ -142,7 +142,7 @@ export class DisplayConsole {
     this.#timing[id] = performance.now();
   }
   
-  timeEnd(message = DisplayConsole.#DEFAULT_MESSAGE, tagName = null, id = 'default') {
+  timeEnd(message = DisplayConsole.#DEFAULT_MESSAGE, tagName: string | null = null, id = 'default') {
     const delta = performance.now() - this.#timing[id] ?? 0;
     this.log(`${message}: ${delta.toFixed(2)}ms`, tagName);
   }

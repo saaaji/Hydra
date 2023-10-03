@@ -1,12 +1,18 @@
 import { AABB } from './AABB.js';
-import { createEnum, chunkArray } from '../utilities/util.js';
+import { createEnum } from '../utilities/util.js';
+import { Primitive } from '../utilities/primitives.js';
+import { Ray } from '../math/Ray.js';
 
 const SAH_BUCKETS = 12;
 const SAH_TRAVERSAL_COST = 1;
 const SAH_INTERSECTION_COST = 2;
 
 class Aggregate {
-  constructor(primitives) {
+  primitiveCount: number;
+  boundingBox: AABB;
+  primitives: Primitive[];
+
+  constructor(primitives: Primitive[]) {
     this.primitives = primitives;
     this.primitiveCount = primitives.length;
     this.boundingBox = new AABB();
@@ -19,11 +25,25 @@ class Aggregate {
   }
 }
 
+enum BVHSplitMethod {
+  SAH
+}
+
 export class BinaryBVH {
-  static SplitMethod = createEnum('SAH');
+  static SplitMethod = BVHSplitMethod.SAH;
+
+  boundingBox: AABB;
+  primitiveCount: number;
+  nodeCount: number;
+  left: null | BinaryBVH;
+  right: null | BinaryBVH;
+  parent: null | BinaryBVH;
+  primitive: null | Primitive;
+  deadEnd: boolean;
+  splitAxis: number;
   
   // parameters prepended with underscore should only be passed internally during construction
-  constructor(primitives, splitMethod = BinaryBVH.SplitMethod.SAH, _parent = null, _deadEnd = true) {
+  constructor(primitives: Primitive[], splitMethod = BVHSplitMethod.SAH, _parent = null, _deadEnd = true) {
     // console.log('[BVH]', primitives);
     
     this.parent = _parent;
@@ -57,7 +77,7 @@ export class BinaryBVH {
     return this.primitive !== null && this.primitive !== undefined;
   }
 
-  intersect(ray) {
+  intersect(ray: Ray) {
     let tMin = Infinity;
     let primitive = null;
     const stack = [this];
@@ -65,7 +85,7 @@ export class BinaryBVH {
     let l = 0;
     
     while (stack.length > 0) {
-      const node = stack.pop();
+      const node = stack.pop()!;
       const [hit, t] = ray.intersectsAABB(node.boundingBox);
 
       if (hit) {
@@ -136,7 +156,7 @@ export class BinaryBVH {
     let currentTexelIndex = 0;
     
     while (stack.length) {
-      const currentNode = stack.pop();
+      const currentNode = stack.pop()!;
       const isInterior = !currentNode.isLeaf;
       
       if (isInterior) {
@@ -184,7 +204,7 @@ export class BinaryBVH {
   }
 }
 
-function sortAndSplitPrimitives(primitives, splitMethod) {
+function sortAndSplitPrimitives(primitives, splitMethod: BVHSplitMethod) {
   if (primitives.length === 2) {
     return [0, 1];
   }

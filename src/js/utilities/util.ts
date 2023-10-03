@@ -1,12 +1,12 @@
 import { DisplayConsole } from './Console.js';
-import { Ray } from '../math/Ray.js';
 import { Vector3 } from '../math/Vector3.js';
 import { AABB } from '../accel/AABB.js';
+import { SceneGraphNode } from './SceneGraphNode.js';
 
-export const GL_CTX = document.createElement('canvas').getContext('webgl2');
+export const GL_CTX = document.createElement('canvas').getContext('webgl2')!;
 
 // misc. utility functions
-export function* enumerate(iterable) {
+export function* enumerate<T>(iterable: Iterable<T>) {
   const iter = iterable[Symbol.iterator]();
   let item = iter.next();
   let index = 0;
@@ -17,15 +17,10 @@ export function* enumerate(iterable) {
   }
 }
 
-export const lowQualityId = () => Math
-  .random()
-  .toString(36)
-  .substr(2, 9)
-  .toUpperCase();
 
-export const clamp = (n, min = -Infinity, max = Infinity) => Math.min(max, Math.max(min, n));
+export const clamp = (n: number, min = -Infinity, max = Infinity) => Math.min(max, Math.max(min, n));
 
-export const canvasToBlob = (canvas, mimeType = 'image/png', quality = 1) => new Promise(resolve => {
+export const canvasToBlob = (canvas: HTMLCanvasElement, mimeType = 'image/png', quality = 1) => new Promise(resolve => {
   canvas.toBlob(blob => resolve(blob), mimeType, quality);
 });
 
@@ -39,7 +34,7 @@ export const jsonToBlob = json => new Blob(
 export const createEnum = (...values) => Object.fromEntries(values.map(val => [val, Symbol(val)]));
 
 // image (de)serialization
-export const blobToImage = blob => new Promise(resolve => {
+export const blobToImage = (blob: Blob) => new Promise(resolve => {
   const image = new Image();
   const url = URL.createObjectURL(blob);
   
@@ -56,36 +51,26 @@ export const loadImage = src => new Promise(resolve => {
   image.onload = () => resolve(image);
 });
 
-export function assert(boolean, message = 'assertion failed') {
+export function assert(boolean: boolean, message = 'assertion failed') {
   if (!boolean) {
     DisplayConsole.getDefault().fatalError(message);
     // throw new Error(message);
   }
 }
 
-export function chunkArray(a, size) {
-  const dst = [];
-  
-  for(var i = 0; i < a.length; i += size) {
-    dst.push(a.slice(i, i + size));
-  }
-  
-  return dst;
-}
-
 // Uniform buffer utilities
 export class UboBuilder {
-  #byteOffset;
-  #buffer;
-  #view;
+  #byteOffset: number;
+  #buffer: ArrayBuffer;
+  #view: DataView;
   
-  constructor(byteLength) {
+  constructor(byteLength: number) {
     this.#byteOffset = 0;
     this.#buffer = new ArrayBuffer(byteLength);
     this.#view = new DataView(this.#buffer);
   }
   
-  #align(alignment) {
+  #align(alignment: number) {
     while (this.#byteOffset % alignment !== 0) {
       this.#byteOffset += UboBuilder.SCALAR_SIZE;
     }
@@ -161,7 +146,7 @@ export class EventTarget {
     }
   }
   
-  dispatchEvent(name, data = null) {
+  dispatchEvent(name, data: SceneGraphNode | null = null) {
     this.#listeners.get(name)?.forEach(listener => listener.call(this, data));
   }
 }
@@ -181,7 +166,7 @@ export const closestHitGLSLMirror = (function() {
     return [v0, v1, v2];
   }
 
-  const intersectsTri = (ray, [v0, v1, v2], tMin = Number.EPSILON, tMax = +Infinity) => {
+  const intersectsTri = (ray, [v0, v1, v2], tMin = Number.EPSILON, tMax = +Infinity): [boolean, number] => {
     const e1 = new Vector3().subVectors(v1, v0);
     const e2 = new Vector3().subVectors(v2, v0);
     const p = new Vector3().crossVectors(ray.direction, e2);

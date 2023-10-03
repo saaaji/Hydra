@@ -1,4 +1,13 @@
+import { Euler } from "./Euler";
+import { Matrix4 } from "./Matrix4";
+import { Vector3 } from "./Vector3";
+
 export class Quaternion {
+  private _x: number;
+  private _y: number;
+  private _z: number;
+  private _w: number;
+  onchange?: () => void;
 
   constructor(x = 0, y = 0, z = 0, w = 1) {
     this._x = x;
@@ -12,7 +21,7 @@ export class Quaternion {
     return new Quaternion(this._x, this._y, this._z, this._w);
   }
   
-  copy(q) {
+  copy(q: Quaternion) {
     this._x = q._x;
     this._y = q._y;
     this._z = q._z;
@@ -22,7 +31,7 @@ export class Quaternion {
     return this;
   }
   
-  equals(q, t = Number.EPSILON) {
+  equals(q: Quaternion, t = Number.EPSILON) {
     return (
       Math.abs(this._x - q._x) < t &&
       Math.abs(this._y - q._y) < t &&
@@ -31,7 +40,7 @@ export class Quaternion {
    );
   }
   
-  strictEquals(q) {
+  strictEquals(q: Quaternion) {
     return (
       this._x === q._x &&
       this._y === q._y &&
@@ -51,11 +60,11 @@ export class Quaternion {
     return this;
   }
   
-  multiply(q) {
+  multiply(q: Quaternion) {
     return this.multiplyQuaternions(this, q);
   }
   
-  premultiply(q) {
+  premultiply(q: Quaternion) {
     return this.multiplyQuaternions(q, this);
   }
   
@@ -82,8 +91,7 @@ export class Quaternion {
     
   }
   
-  setFromAxisAngle(axis, angle) {
-    
+  setFromAxisAngle(axis: Vector3, angle: number) {
     const sinT = Math.sin(angle / 2);
     
     this._x = axis.x * sinT;
@@ -98,7 +106,7 @@ export class Quaternion {
   }
   
   // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-  setFromEuler(e, triggerCallback = true) {
+  setFromEuler(e: Euler, triggerCallback = true) {
     
     const cosX = Math.cos(e._x * 0.5),
           sinX = Math.sin(e._x * 0.5),
@@ -119,7 +127,7 @@ export class Quaternion {
     
   }
   
-  setFromRotationMatrix(r) {
+  setFromRotationMatrix(r: Matrix4) {
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 		let trace = r.m11 + r.m22 + r.m33;
 

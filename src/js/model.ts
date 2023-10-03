@@ -8,7 +8,6 @@ import { MeshBlas } from './utilities/primitives.js';
 import { BinaryBVH } from './accel/BVHNode.js';
 import { HdrLoader, computeHdrSamplingDistributions } from './loading/HdrLoader.js';
 import { OrbitalCamera } from './utilities/OrbitCamera.js';
-import { Matrix4 } from './math/Matrix4.js';
 import { ActiveNodeEditor } from './utilities/ActiveNodeEditor.js';
 import { Ray } from './math/Ray.js';
 import {
@@ -105,13 +104,17 @@ export class HydraModel extends EventTarget {
   debugIndex = 0;
   emissiveFactor = 1;
   preferEditorCam = false;
-  cachedTlas = null;
+  cachedTlas: null | BinaryBVH = null;
+
+  gl: WebGL2RenderingContext;
+  fg: FrameGraph;
+  sceneGraph: SceneGraphNode;
 
   get fps() {
     return 1000 * (this.sampleCount - this.#sampleOffset) / (performance.now() - this.#startTime);
   } 
 
-  pick(u, v) {
+  pick(u: number, v: number) {
     const ray = Ray.generate(u, v, this.editorCamera.projectionMatrix, this.editorCamera.viewMatrix);
 
     if (this._cachedBvhBuffer) {
@@ -127,7 +130,7 @@ export class HydraModel extends EventTarget {
     }
   }
 
-  constructor(gl) {
+  constructor(gl: WebGL2RenderingContext) {
     super();
     
     this.gl = gl;
@@ -136,7 +139,7 @@ export class HydraModel extends EventTarget {
     this.fg = new FrameGraph(gl);
     
     // load WebGL extensions
-    const [debugExt] = this.constructor.REQUIRED_WEBGL_EXTENSIONS.map(name => {
+    const [debugExt] = HydraModel.REQUIRED_WEBGL_EXTENSIONS.map(name => {
       const extension = this.gl.getExtension(name);
       if (extension !== null) {
         return extension;
@@ -198,10 +201,8 @@ Renderer: ${this.gl.getParameter(debugExt.UNMASKED_RENDERER_WEBGL)}`
     }
     
     // compile new shaders
-    for (const name in this.constructor.PROGRAM_INFO) {
-      const [vertexSource, fragmentSource] = this
-        .constructor
-        .PROGRAM_INFO[name]
+    for (const name in HydraModel.PROGRAM_INFO) {
+      const [vertexSource, fragmentSource] = HydraModel.PROGRAM_INFO[name]
         .map(file => this.sourceCache.fetchModule(file));
       
       this.shaderLib.addShader(name, this.gl, {
@@ -946,7 +947,7 @@ Renderer: ${this.gl.getParameter(debugExt.UNMASKED_RENDERER_WEBGL)}`
     const [json, binary] = this.asset;
     
     // collect meshes
-    const meshes = this.sceneGraph.nodes
+    const meshes: any[] = this.sceneGraph.nodes
       .filter(node => node.type === 'MeshNode')
       .filter(({mesh}) => mesh.renderable)
       // BlasDescriptors must be sorted according to index

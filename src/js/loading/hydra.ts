@@ -228,7 +228,7 @@ function createUniformBuffers(bufferDescriptors, state) {
   return uniformBuffers;
 }
 
-function createObjectAccelStructs(meshDescriptors, vertexAttribs, indices, state) {
+function createObjectAccelStructs(meshDescriptors, vertexAttribs, indices: number[], state) {
   const objectAccelStructs = [];
   
   for (const {meshIndex, start, count} of meshDescriptors) {
@@ -254,14 +254,14 @@ function createObjectAccelStructs(meshDescriptors, vertexAttribs, indices, state
   return objectAccelStructs;
 }
 
-function createHeader(magic, n) {
+function createHeader(magic: number, n: number) {
   const header = new DataView(new ArrayBuffer(HEADER_SIZE));
   header.setUint32(0, magic, true);
   header.setUint32(4, n, true);
   return header;
 }
 
-function createMagic(string) {
+function createMagic(string: string) {
   const magicString = string.slice(0, 4).padEnd(4, '\0');
   const bytes = new TextEncoder().encode(magicString);
   const view = new DataView(bytes.buffer);

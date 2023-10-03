@@ -1,3 +1,5 @@
+import { AABB } from '../accel/AABB.js';
+import { Matrix4 } from './Matrix4.js';
 import { Vector3 } from './Vector3.js';
 
 const PADDING = 0.001;
@@ -75,4 +77,5 @@ export class Ray {
 
     return [tMin < tMax, tMin];
   }
+
 }

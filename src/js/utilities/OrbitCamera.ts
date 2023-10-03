@@ -1,6 +1,7 @@
 import { Vector3 } from '../math/Vector3.js';
 import { Matrix4 } from '../math/Matrix4.js';
 import { clamp } from './util.js';
+import { CameraNode } from './SceneGraphNode.js';
   
 const TOLERANCE = 0.01;
 const MIN_DIST = 0.01;
@@ -9,7 +10,11 @@ const UP = new Vector3(0, 1, 0);
 export class OrbitalCamera {
   #originMatrix = new Matrix4();
   #matrix = new Matrix4();
-  #distance;
+  #distance: number;
+
+  panSpeed: number;
+  zoomSpeed: number;
+  strafeSpeed: number;
   
   // spherical coordinates
   #spherical = {
@@ -24,9 +29,10 @@ export class OrbitalCamera {
   #x = new Vector3();
   #y = new Vector3();
 
-  #cameraNode = null;
+  #cameraNode : null | CameraNode = null;
+
   
-  constructor(panSpeed, zoomSpeed, distance, strafeSpeed, onchange = null) {
+  constructor(panSpeed: number, zoomSpeed: number, distance: number, strafeSpeed: number, onchange = null) {
     this.panSpeed = panSpeed;
     this.zoomSpeed = zoomSpeed;
     this.strafeSpeed = strafeSpeed,
@@ -71,7 +77,7 @@ export class OrbitalCamera {
   }
   
   // respond to 'mousemove' event
-  pan(dx, dy) {
+  pan(dx: number, dy: number) {
     this.#spherical.theta += -dx * this.panSpeed;
     this.#spherical.phi = clamp(
       this.#spherical.phi + -dy * this.panSpeed,
@@ -80,7 +86,7 @@ export class OrbitalCamera {
     this.#update();
   }
 
-  strafe(dx, dy) {
+  strafe(dx: number, dy: number) {
     const ratio = this.zoomSpeed / this.strafeSpeed;
 
     this.#origin
@@ -100,7 +106,7 @@ export class OrbitalCamera {
     this.#update();
   }
 
-  linkCameraNode(cameraNode) {
+  linkCameraNode(cameraNode: CameraNode) {
     this.#cameraNode = cameraNode;
     this.#update();
   }
